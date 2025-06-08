@@ -1,3 +1,19 @@
+
+import os
+import requests
+
+# Download the model from Dropbox if not exists
+model_url = "https://www.dl.dropboxusercontent.com/scl/fi/bx919lqd3r3yvtsxi50ns/stone_classifier_model.h5?rlkey=q4xnvaiw1lm61xr5xcqbcoppy&st=7jqoakb2&dl=1"
+model_path = "model.h5"
+if not os.path.exists(model_path):
+    print("Downloading model...")
+    with requests.get(model_url, stream=True) as r:
+        r.raise_for_status()
+        with open(model_path, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+    print("Model downloaded.")
+
 from flask import Flask, request, render_template
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -7,19 +23,7 @@ import os
 app = Flask(__name__)
 
 # تحميل النموذج
-
-import requests
-
-model_path = "downloaded_model.h5"
-if not os.path.exists(model_path):
-    print("Downloading model from Dropbox...")
-    with requests.get("https://www.dropbox.com/scl/fi/bx919lqd3r3yvtsxi50ns/stone_classifier_model.h5?rlkey=q4xnvaiw1lm61xr5xcqbcoppy&st=7jqoakb2&dl=1", stream=True) as r:
-        with open(model_path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-
-model = load_model(model_path)
-
+model = load_model("model.h5")
 
 # أسماء الفئات - قم بتعديلها حسب نموذجك
 class_names = ["class_1", "class_2", "class_3"]
