@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>النظام المتقدم للتعرف على الأحجار الكريمة</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 النظام المتقدم للتعرف على الأحجار الكريمة</h1>
+        <p class="desc">نظام ذكي بدقة تصنيف تصل إلى 98٪ باستخدام أحدث تقنيات الذكاء الاصطناعي</p>
+
+        <div class="content">
+            <div class="upload-box">
+                <form action="/" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="image" accept="image/*" required>
+                    <button type="submit">اختيار صورة</button>
+                </form>
+                {% if image_url %}
+                    <div class="result">
+                        <h3>الصورة:</h3>
+                        <img src="{{ image_url }}" alt="Uploaded Image" class="preview-img">
+                        <h3>النتيجة: {{ label }}</h3>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <footer>
+            <p>📧 aseal.hasam98@gmail.com</p>
+            <p>🎥 <a href="https://www.tiktok.com/@o.alnoader?_t=ZS-8x2Q3Zg228i&_r=1" target="_blank">TikTok</a></p>
+        </footer>
+    </div>
+</body>
+</html>
