@@ -1,88 +1,43 @@
-body {
-  font-family: 'Tajawal', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f4f4;
-  direction: rtl;
-}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>نظام التعرف على الأحجار الكريمة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-header {
-  background: linear-gradient(to left, #ff416c, #ff4b2b);
-  color: white;
-  padding: 20px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+<header>
+    النظام المتقدم للتعرف على الأحجار الكريمة
+    <p style="font-size: 14px; font-weight: normal;">نظام ذكي بدقة تصنيف تصل إلى 98% باستخدام أحدث تقنيات الذكاء الاصطناعي</p>
+</header>
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 40px auto;
-  max-width: 500px;
-  padding: 20px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-}
+<div class="container">
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <div class="upload-area">
+            <p>اسحب وأفلت صورة الحجر هنا أو انقر لاختيارها</p>
+            <input type="file" name="file" id="file" accept="image/*" required onchange="this.form.submit()">
+            <button type="button" onclick="document.getElementById('file').click()">اختيار صورة</button>
+        </div>
+    </form>
 
-.upload-area {
-  border: 2px dashed #aaa;
-  padding: 30px;
-  text-align: center;
-  margin-bottom: 20px;
-  cursor: pointer;
-  border-radius: 10px;
-  background-color: #fdfdfd;
-  transition: 0.3s ease;
-}
+    {% if label %}
+    <div class="result">
+        نوع الحجر: {{ label }}
+        <br>
+        <img src="{{ image_url }}" alt="Uploaded Image" style="max-width:100%; margin-top:10px;">
+    </div>
+    {% endif %}
+</div>
 
-.upload-area:hover {
-  border-color: #ff416c;
-}
+<footer>
+    <p>
+        تواصل معنا: 
+        <a href="mailto:aseal.hasam98@gmail.com">aseal.hasam98@gmail.com</a> |
+        <a href="https://www.tiktok.com/@o.alnoader?_t=ZS-8x2Q3Zg228i&_r=1" target="_blank">تيك توك</a>
+    </p>
+</footer>
 
-input[type="file"] {
-  display: none;
-}
-
-button {
-  padding: 12px 25px;
-  background-color: #ff416c;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #e63e5c;
-}
-
-.result {
-  margin-top: 20px;
-  font-size: 18px;
-  color: #333;
-  text-align: center;
-  font-weight: bold;
-}
-
-footer {
-  margin-top: 50px;
-  text-align: center;
-  font-size: 14px;
-  color: #888;
-}
-
-footer a {
-  color: #ff416c;
-  text-decoration: none;
-  margin: 0 5px;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
+</body>
+</html>
