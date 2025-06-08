@@ -3,89 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>نظام التعرف على الأحجار الكريمة</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            background: linear-gradient(to right, #1d2671, #c33764);
-            font-family: 'Tahoma', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-            direction: rtl;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .upload-section {
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .upload-section input[type="file"] {
-            margin: 15px 0;
-        }
-        .result-section {
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-        }
-        .btn {
-            background: linear-gradient(to right, #9D50BB, #6E48AA);
-            border: none;
-            color: white;
-            padding: 10px 25px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .footer a {
-            color: #ccc;
-            text-decoration: none;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>💎 النظام المتقدم للتعرف على الأحجار الكريمة</h1>
-        <div class="upload-section">
-            <form method="POST" action="/" enctype="multipart/form-data">
-                <label for="file">قم برفع صورة الحجر للتعرف عليه:</label><br>
-                <input type="file" name="file" accept="image/*" required><br>
-                <button type="submit" class="btn">تحليل الحجر</button>
-            </form>
-        </div>
 
-        {% if label %}
-        <div class="result-section">
-            <h2>🔍 نتيجة التحليل</h2>
-            <p><strong>نوع الحجر:</strong> {{ label }}</p>
-            {% if image_url %}
-                <img src="{{ image_url }}" alt="صورة الحجر" style="max-width: 100%; border-radius: 10px; margin-top: 10px;">
-            {% endif %}
-        </div>
-        {% endif %}
+<header>
+    النظام المتقدم للتعرف على الأحجار الكريمة
+    <p style="font-size: 14px; font-weight: normal;">
+        نظام ذكي بدقة تصنيف تصل إلى 98% باستخدام أحدث تقنيات الذكاء الاصطناعي
+    </p>
+</header>
 
-        <div class="footer">
-            <p>📧 للتواصل: <a href="mailto:aseal.hasam98@gmail.com">aseal.hasam98@gmail.com</a></p>
-            <p>📱 <a href="https://www.tiktok.com/@o.alnoader?_t=ZS-8x2Q3Zg228i&_r=1" target="_blank">TikTok: @o.alnoader</a></p>
+<div class="container">
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <div class="upload-area">
+            <p>اسحب وأفلت صورة الحجر هنا أو انقر لاختيارها</p>
+            <input type="file" name="file" id="file" accept="image/*" required onchange="this.form.submit()">
+            <button type="button" onclick="document.getElementById('file').click()">اختيار صورة</button>
         </div>
+    </form>
+
+    {% if label %}
+    <div class="result">
+        نوع الحجر: {{ label }}
+        <br>
+        <img src="{{ image_url }}" alt="Uploaded Image" style="max-width:100%; margin-top:10px;">
     </div>
+    {% endif %}
+</div>
+
+<footer>
+    <p>
+        تواصل معنا: 
+        <a href="mailto:aseal.hasam98@gmail.com">aseal.hasam98@gmail.com</a> |
+        <a href="https://www.tiktok.com/@o.alnoader?_t=ZS-8x2Q3Zg228i&_r=1" target="_blank">تيك توك</a>
+    </p>
+</footer>
+
 </body>
 </html>
