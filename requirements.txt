@@ -1,2 +1,4 @@
-flask
-gunicorn
+Flask
+tensorflow
+numpy
+Pillow

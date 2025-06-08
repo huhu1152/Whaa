@@ -1,38 +1,35 @@
-
-from flask import Flask, render_template, request
-from werkzeug.utils import secure_filename
-import os
-import numpy as np
+from flask import Flask, request, render_template
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+import numpy as np
+import os
 
 app = Flask(__name__)
-model = load_model("stone_classifier_model.h5")
-UPLOAD_FOLDER = "static/uploads"
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-classes = ['class1', 'class2', 'class3', '...']  # ضع أسماء الفئات هنا
+# تحميل النموذج
+model = load_model("model.h5")
+
+# أسماء الفئات - قم بتعديلها حسب نموذجك
+class_names = ["class_1", "class_2", "class_3"]
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None
-    filename = None
     if request.method == "POST":
-        file = request.files["image"]
+        file = request.files["file"]
         if file:
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-            file.save(file_path)
-
-            img = image.load_img(file_path, target_size=(224, 224))
+            filepath = os.path.join("static", file.filename)
+            file.save(filepath)
+            img = image.load_img(filepath, target_size=(224, 224))
             img_array = image.img_to_array(img)
-            img_array = np.expand_dims(img_array, axis=0) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
+            img_array = img_array / 255.0
 
             prediction = model.predict(img_array)
-            predicted_class = classes[np.argmax(prediction)]
-            result = f"النوع المتوقع: {predicted_class}"
-
-    return render_template("index.html", result=result, filename=filename)
+            predicted_class = class_names[np.argmax(prediction)]
+            confidence = round(100 * np.max(prediction), 2)
+            result = f"Prediction: {predicted_class} ({confidence}%)"
+    return render_template("index.html", result=result)
 
 if __name__ == "__main__":
     app.run(debug=True)
