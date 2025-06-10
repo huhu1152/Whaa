@@ -43,8 +43,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function loadModel() {
     try {
         modelStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> جاري تحميل نموذج الذكاء الاصطناعي...';
-        // المسار المعدل لملف النموذج داخل مجلد model/
-        model = await tf.loadGraphModel('model/model.json');
+        
+        // المسار المعدل لملف النموذج على GitHub
+        model = await tf.loadGraphModel('https://raw.githubusercontent.com/[اسم-المستخدم]/[اسم-المستودع]/main/model/model.json');
+        
         modelStatus.innerHTML = '<i class="fas fa-check-circle"></i> النموذج جاهز للاستخدام!';
         console.log('تم تحميل النموذج بنجاح');
     } catch (error) {
@@ -139,16 +141,4 @@ async function predictImage() {
 }
 
 // تعيين حدث للزر
-predictBtn.addEventListener('click', predictImage);';
-                
-                // تحرير الذاكرة
-                tensor.dispose();
-            }, 1500);
-        } catch (error) {
-            console.error('حدث خطأ أثناء التنبؤ:', error);
-            resultDiv.textContent = 'حدث خطأ أثناء معالجة الصورة';
-            confidenceDiv.textContent = '';
-            loadingDiv.style.display = 'none';
-        }
-    }
-});
+predictBtn.addEventListener('click', predictImage);
