@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام التعرف على أنواع الأحجار الكريمة</title>
+    <title>نظام التعرف على الأحجار الكريمة</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -33,6 +33,8 @@
             padding: 30px 0;
             margin-bottom: 30px;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
         }
         
         h1 {
@@ -301,21 +303,29 @@
             object-fit: cover;
         }
         
-        .connection-warning {
-            background: rgba(255, 107, 107, 0.2);
-            border-left: 4px solid #ff6b6b;
-            padding: 10px;
-            border-radius: 0 8px 8px 0;
-            margin: 15px 0;
-            display: none;
-        }
-        
         .local-model-info {
             background: rgba(78, 205, 196, 0.2);
             border-left: 4px solid #4ecdc4;
             padding: 10px;
             border-radius: 0 8px 8px 0;
             margin: 15px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #3ad59f);
+            width: 0%;
+            transition: width 0.3s ease;
         }
         
         @media (max-width: 768px) {
@@ -336,6 +346,26 @@
                 height: 60px;
             }
         }
+        
+        .stone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stone-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stone-name {
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -353,8 +383,8 @@
             <i class="fas fa-info-circle"></i> تم تحميل النموذج من ملفاتك المحلية
         </div>
         
-        <div class="connection-warning" id="connectionWarning">
-            <i class="fas fa-exclamation-triangle"></i> يبدو أن اتصال الإنترنت ضعيف. قد يستغرق تحميل النموذج وقتاً أطول.
+        <div class="progress-bar" id="progressBar">
+            <div class="progress" id="progress"></div>
         </div>
         
         <div class="app-container">
@@ -411,6 +441,53 @@
                         <button class="retry-btn" id="retryBtn" style="display:none;">
                             <i class="fas fa-redo"></i> إعادة المحاولة
                         </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title"><i class="fas fa-gem"></i> أنواع الأحجار التي يتعرف عليها النظام</h2>
+                
+                <div class="stone-grid">
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #ff6b6b; font-size: 2rem;"></i>
+                        <div class="stone-name">حجر الفمر</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #4ecdc4; font-size: 2rem;"></i>
+                        <div class="stone-name">حجر الهبهاب</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #ffd166; font-size: 2rem;"></i>
+                        <div class="stone-name">حجر الباقوت</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #118ab2; font-size: 2rem;"></i>
+                        <div class="stone-name">حجر اليشب</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #073b4c; font-size: 2rem;"></i>
+                        <div class="stone-name">حجر البشم</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #06d6a0; font-size: 2rem;"></i>
+                        <div class="stone-name">حجر الفيروز</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #ef476f; font-size: 2rem;"></i>
+                        <div class="stone-name">در النجف</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #7209b7; font-size: 2rem;"></i>
+                        <div class="stone-name">عباس اباد</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #f15bb5; font-size: 2rem;"></i>
+                        <div class="stone-name">عقيق</div>
+                    </div>
+                    <div class="stone-item">
+                        <i class="fas fa-gem" style="color: #fee440; font-size: 2rem;"></i>
+                        <div class="stone-name">عقيق - شرف الشمس</div>
                     </div>
                 </div>
             </div>
@@ -473,67 +550,37 @@
         const modelStatus = document.getElementById('modelStatus');
         const retryBtn = document.getElementById('retryBtn');
         const stoneExamples = document.querySelectorAll('.stone-example');
-        const connectionWarning = document.getElementById('connectionWarning');
+        const progressBar = document.getElementById('progressBar');
+        const progress = document.getElementById('progress');
         
-        // قائمة ملفات النموذج من Google Drive
-        const modelFiles = {
-            "model.json": "https://drive.google.com/uc?export=download&id=1cj6TcamT5radrZ_aZFyOfmUr-TCPSEjc",
-            "group1-shard1of23.bin": "https://drive.google.com/uc?export=download&id=1d6dKfPJgjgb0ZMEDyqSoJ4NMmhtGfCq4",
-            "group1-shard2of23.bin": "https://drive.google.com/uc?export=download&id=1cyREaH4Don-5LDtAXqgH_pOb8g7xFdD6",
-            "group1-shard3of23.bin": "https://drive.google.com/uc?export=download&id=1cx7Hc5ZMq7GTIG4-mmdFY3Ol3sT5XPHd",
-            "group1-shard4of23.bin": "https://drive.google.com/uc?export=download&id=1cwPtePVmia2We_2khXrQh0-zfjg42O_2",
-            "group1-shard5of23.bin": "https://drive.google.com/uc?export=download&id=1cqKtEGhjRXlN5w7ax9oEYEocgi1_t1FK",
-            "group1-shard6of23.bin": "https://drive.google.com/uc?export=download&id=1cpwkxocWthnlrKg2SInaH9wiSbtoxSUj",
-            "group1-shard7of23.bin": "https://drive.google.com/uc?export=download&id=1cnV7GLsYed5zY2zMsu1HQkiO5N9VXQJ4",
-            "group1-shard8of23.bin": "https://drive.google.com/uc?export=download&id=1cmcxbPedFa1yRsWIs3Owaaw4np1gvfck",
-            "group1-shard9of23.bin": "https://drive.google.com/uc?export=download&id=1ckMntmZIiakypOB5BFZuDMIoT3r1JMlM",
-            "group1-shard10of23.bin": "https://drive.google.com/uc?export=download&id=1dZ7kEw0ARp2-kMHB_wBchv7DT50x-YW8",
-            "group1-shard11of23.bin": "https://drive.google.com/uc?export=download&id=1dTjaaRDAnGXDFok1xRK9sHfPLl0qeM8u",
-            "group1-shard12of23.bin": "https://drive.google.com/uc?export=download&id=1dNH8OXJxFXrGI6dGLR2gs8fNGqNIQ6Oa",
-            "group1-shard13of23.bin": "https://drive.google.com/uc?export=download&id=1dN9jW_F6RGIyQMX1P3wh0sHPnV5AbZKq",
-            "group1-shard14of23.bin": "https://drive.google.com/uc?export=download&id=1dLjeb67LcmiB7TLqyzjQL-QZj7LcEr7s",
-            "group1-shard15of23.bin": "https://drive.google.com/uc?export=download&id=1dLTUJwUkr9p92R7WNqaakBrLPCp3WKT7",
-            "group1-shard16of23.bin": "https://drive.google.com/uc?export=download&id=1dL88o-8oveJ0057DTTJImO4Y3SI23vPO",
-            "group1-shard17of23.bin": "https://drive.google.com/uc?export=download&id=1dHVVlgq_vabU1cva5DV7QM-JsI4ZJ4pZ",
-            "group1-shard18of23.bin": "https://drive.google.com/uc?export=download&id=1dF6JQS5TTmJA-_lHtjGGAZs1-UNy7Fvj",
-            "group1-shard19of23.bin": "https://drive.google.com/uc?export=download&id=1dCK44pE0HpyaRsTF6av8TLjoJ9vjIR89",
-            "group1-shard20of23.bin": "https://drive.google.com/uc?export=download&id=1d6H8Kh8TLcgCQ232DXXZsShoXeB-7Msp",
-            "group1-shard21of23.bin": "https://drive.google.com/uc?export=download&id=1d4JkYkWkCgr26yp61sexoZxFH_jhaALH",
-            "group1-shard22of23.bin": "https://drive.google.com/uc?export=download&id=1czKJSPaVVo7KAy_4LSW8nAQhVwBrnCmj",
-            "group1-shard23of23.bin": "https://drive.google.com/uc?export=download&id=1cz3NrIALICDITYDZhC13XPliOipqinbq"
-        };
-        
-        // تحميل النموذج
+        // تحميل النموذج من الملفات المحلية
         async function loadModel() {
             try {
                 modelStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> جاري تحميل النموذج...';
                 errorMessage.textContent = '';
                 retryBtn.style.display = 'none';
-                connectionWarning.style.display = 'none';
+                progressBar.style.display = 'block';
                 
-                // اختبار سرعة الاتصال
-                if (navigator.connection) {
-                    const connection = navigator.connection;
-                    if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
-                        connectionWarning.style.display = 'block';
+                // محاكاة شريط التقدم
+                let progressValue = 0;
+                const progressInterval = setInterval(() => {
+                    progressValue += Math.floor(Math.random() * 5);
+                    if (progressValue >= 100) {
+                        progressValue = 100;
+                        clearInterval(progressInterval);
                     }
-                }
+                    progress.style.width = progressValue + '%';
+                }, 200);
                 
-                // خيارات لتحميل النموذج
-                const loadOptions = {
-                    weightUrlConverter: async (weightFileName) => {
-                        // أولاً: محاولة من Google Drive
-                        if (modelFiles[weightFileName]) {
-                            return modelFiles[weightFileName];
-                        }
-                        
-                        // ثانياً: محاولة من الملفات المحلية
-                        return `./model/${weightFileName}`;
-                    }
-                };
+                // تحميل النموذج من الملفات المحلية
+                model = await tf.loadGraphModel('model/model.json');
                 
-                // تحميل النموذج
-                model = await tf.loadGraphModel(modelFiles["model.json"], loadOptions);
+                // إخفاء شريط التقدم
+                clearInterval(progressInterval);
+                progress.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                }, 500);
                 
                 modelStatus.innerHTML = '<i class="fas fa-check-circle"></i> النموذج جاهز للاستخدام!';
                 console.log('تم تحميل النموذج بنجاح');
@@ -547,14 +594,15 @@
                 
                 // رسائل خطأ محددة
                 if (error.message.includes('Failed to fetch')) {
-                    errorMessage.textContent = 'مشكلة في الاتصال بالإنترنت أو الوصول لملفات النموذج.';
+                    errorMessage.textContent = 'تعذر العثور على ملفات النموذج. تأكد من وجود مجلد "model" يحتوي على جميع الملفات.';
                 } else if (error.message.includes('WebGL')) {
                     errorMessage.textContent = 'المتصفح لا يدعم WebGL. الرجاء استخدام متصفح حديث مثل Chrome أو Firefox.';
                 } else {
-                    errorMessage.textContent = 'حدث خطأ غير متوقع. الرجاء إعادة تحميل الصفحة.';
+                    errorMessage.textContent = 'حدث خطأ غير متوقع: ' + error.message;
                 }
                 
                 retryBtn.style.display = 'block';
+                progressBar.style.display = 'none';
             }
         }
         
