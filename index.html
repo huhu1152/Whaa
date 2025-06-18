@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>معرفة نوع الحجر الكريم</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #22c55e;
+        }
+        input[type="file"], button {
+            padding: 10px;
+            margin: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #facc15;
+        }
+        .error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 معرفة نوع الحجر الكريم</h1>
+    <input type="file" id="imageInput">
+    <br>
+    <button onclick="predict()">تعرّف على الحجر</button>
+    <div id="result">نتيجة التحليل ستظهر هنا</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0/dist/tf.min.js"></script>
+    <script>
+        let model;
+
+        async function loadModel() {
+            try {
+                model = await tf.loadLayersModel('model/model.json');
+                document.getElementById('result').textContent = '✅ تم تحميل النموذج بنجاح.';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<span class="error">❌ فشل في تحميل النموذج: ' + error.message + '</span>';
+            }
+        }
+
+        async function predict() {
+            const fileInput = document.getElementById('imageInput');
+            const resultDiv = document.getElementById('result');
+            if (!fileInput.files.length) {
+                resultDiv.innerHTML = '<span class="error">يرجى اختيار صورة أولاً</span>';
+                return;
+            }
+
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                img.onload = async function() {
+                    const tensor = tf.browser.fromPixels(img)
+                        .resizeNearestNeighbor([224, 224])
+                        .toFloat()
+                        .div(255.0)
+                        .expandDims();
+
+                    const prediction = model.predict(tensor);
+                    const result = await prediction.array();
+                    const index = result[0].indexOf(Math.max(...result[0]));
+                    resultDiv.textContent = '🔍 نوع الحجر المتوقع: ' + index;
+                };
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        loadModel();
+    </script>
+</body>
+</html>
